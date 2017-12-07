@@ -8,12 +8,16 @@ class Cammino_Apijson_Model_Stock extends Mage_Core_Model_Abstract{
 	}
 
 	public function editStock($stocks){
+		$hasError = false;
+		$hasErrorMessage = array();
 		try{
 			foreach ($stocks as $stock) {
 				$product = Mage::getModel('catalog/product')->loadByAttribute('sku', $stock->sku);
 				
 				if(!$product){
-					$this->helper->returnRequest('0', 'invalid sku: ' . $stock->sku);
+					$hasError = true;
+					$hasErrorMessage[] = 'invalid sku: ' . $stock->sku;
+					continue;
 				}
 
 				$stockItem = Mage::getModel('cataloginventory/stock_item')->loadByProduct($product->getId());
@@ -23,12 +27,20 @@ class Cammino_Apijson_Model_Stock extends Mage_Core_Model_Abstract{
 					$stockItem->setIsInStock((int)($qty > 0));
 					$stockItem->save();
 				}else{
-					$this->helper->returnRequest('1', 'invalid stock item for sku: ' . $stock->sku);
+					$hasError = true;
+					$hasErrorMessage[] = 'invalid stock item for sku: ' . $stock->sku;
+					continue;
 				}
 			}
-			$this->helper->returnRequest('1', 'success');
+
+			if(!$hasError){
+				$this->helper->returnRequest('success');
+			}else{
+				$this->helper->returnRequest('error', $hasErrorMessage);
+			}
+
 		}catch(Exception $e) {
-			$this->helper->returnRequest('0', $e->getMessage());
+			$this->helper->returnRequest('error', $e->getMessage());
 		}
 	}
 }

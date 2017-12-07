@@ -7,8 +7,12 @@ class Cammino_Apijson_Helper_Data extends Mage_Core_Helper_Abstract{
 		return json_decode($request);
 	}
 
-	public function returnRequest($status, $message){
-		$data = array('status' => $status, 'message' => strtolower($message));
+	public function returnRequest($status, $message = ""){
+		if($status == 'success'){
+			$data = array('status' => 'success');
+		}else{
+			$data = array('status' => $status, 'message' => $message);
+		}
 		echo json_encode($data);
 		die();
 	}
@@ -17,14 +21,14 @@ class Cammino_Apijson_Helper_Data extends Mage_Core_Helper_Abstract{
 		if (!isset($_SERVER['PHP_AUTH_USER'])) {
 			header('WWW-Authenticate: Basic realm="My Realm"');
 			header('HTTP/1.0 401 Unauthorized');
-			$this->returnRequest('0','username/password not informed');
+			$this->returnRequest('error','username/password not informed');
 		} else {
 			$user = $_SERVER['PHP_AUTH_USER'];
 			$pass = $_SERVER['PHP_AUTH_PW'];
 
 			$api = Mage::getModel('api/user');
 			if(!$api->authenticate($user, $pass)){
-				$this->returnRequest('0','unauthorized user');
+				$this->returnRequest('error','unauthorized user');
 			}
 		}
 	}
