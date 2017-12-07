@@ -1,0 +1,30 @@
+<config>
+    <modules>
+        <Cammino_Apijson>
+            <version>0.0.1</version>
+        </Cammino_Apijson>
+    </modules>
+    <global>
+        <models>
+            <apijson>
+                <class>Cammino_Apijson_Model</class>
+            </apijson>
+        </models>
+        <helpers>
+            <apijson>
+                <class>Cammino_Apijson_Helper</class>
+            </apijson>
+        </helpers>
+    </global>
+    <frontend>
+        <routers>
+            <api>
+                <use>standard</use>
+                <args>
+                    <module>Cammino_Apijson</module>
+                    <frontName>apijson</frontName>
+                </args>
+            </api>
+        </routers>
+    </frontend>
+</config>

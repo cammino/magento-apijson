@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Cammino_Apijson>
+            <active>true</active>
+            <codePool>community</codePool>
+        </Cammino_Apijson>
+    </modules>
+</config>
