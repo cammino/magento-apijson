@@ -8,10 +8,12 @@ class Cammino_Apijson_Helper_Data extends Mage_Core_Helper_Abstract{
 	}
 
 	public function returnRequest($status, $message = ""){
-		if($status == 'success'){
+		if($status == 'success') {
 			$data = array('status' => 'success');
-		}else{
-			$data = array('status' => $status, 'message' => $message);
+		} else if ($status == 'warning'){
+			$data = array('status' => 'success', 'message' => $message);
+		} else {
+			$data = array('status' => 'error', 'message' => $message);
 		}
 		echo json_encode($data);
 		die();
