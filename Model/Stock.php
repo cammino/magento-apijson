@@ -21,17 +21,38 @@ class Cammino_Apijson_Model_Stock extends Mage_Core_Model_Abstract{
 					continue;
 				}
 
+				$price = $stock->price;
+				$special_price = $stock->special_price;
+
+				if (!empty(strval($qty))) {
+					$product->setPrice($price);
+				}
+
+				if (!empty(strval($special_price))) {
+					$product->setSpecialPrice($special_price);
+				}
+
 				$stockItem = Mage::getModel('cataloginventory/stock_item')->loadByProduct($product->getId());
-				if ($stockItem->getId() > 0 and $stockItem->getManageStock()) {
+
+				if (($stockItem->getId() > 0) && $stockItem->getManageStock()) {
+
 					$qty = $stock->qty;
-					$stockItem->setQty($qty);
-					$stockItem->setIsInStock((int)($qty > 0));
+					
+					if (!empty(strval($qty))) {
+						$stockItem->setQty($qty);
+						$stockItem->setIsInStock((int)($qty > 0));
+					}
+					
 					$stockItem->save();
-				}else{
+
+				} else {
 					$hasWarning = true;
-					$hasWarningMessage[] = 'invalid stock item for sku: ' . $stock->sku;
+					$hasWarningMessage[] = 'invalid stock for sku: ' . $stock->sku;
 					continue;
 				}
+
+				$product->save();
+
 			}
 
 			if(!$hasWarning){
